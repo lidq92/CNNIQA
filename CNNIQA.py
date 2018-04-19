@@ -206,7 +206,7 @@ if __name__ == '__main__':
                    "KROCC={:.4f}, ".format(val_KROCC) + 
                    "PLCC={:.4f}, ".format(val_PLCC) + 
                    "RMSE={:.4f}, ".format(val_RMSE) +
-                   "OR={:.2f}%, ".format(val_OR*100))
+                   "OR={:.2f}%, ".format(val_OR * 100))
             f = open(save_result_file+'.txt', 'w')
             f.write("EXP ID={}: ".format(EXP_ID) + 
                   "Update best model using best_val_criterion " + 
@@ -217,7 +217,7 @@ if __name__ == '__main__':
                    "KROCC={:.4f}, ".format(val_KROCC) + 
                    "PLCC={:.4f}, ".format(val_PLCC) + 
                    "RMSE={:.4f}, ".format(val_RMSE) +
-                   "OR={:.2f}%, ".format(val_OR*100) + '\n')
+                   "OR={:.2f}%, ".format(val_OR * 100) + '\n')
             if test_ratio > 0 and conf['test_during_training']:
                 print("Test results: " + 
                        "test loss={:.4f}, ".format(test_loss) + 
@@ -225,14 +225,14 @@ if __name__ == '__main__':
                        "KROCC={:.4f}, ".format(KROCC) + 
                        "PLCC={:.4f}, ".format(PLCC) + 
                        "RMSE={:.4f}, ".format(RMSE) +
-                       "OR={:.2f}%, ".format(val_OR*100))
+                       "OR={:.2f}%, ".format(OR * 100))
                 f.write("Test results: " + 
                        "test loss={:.4f}, ".format(test_loss) + 
                        "SROCC={:.4f}, ".format(SROCC) + 
                        "KROCC={:.4f}, ".format(KROCC) + 
                        "PLCC={:.4f}, ".format(PLCC) + 
                        "RMSE={:.4f}, ".format(RMSE) +
-                       "OR={:.2f}%, ".format(val_OR*100) + '\n')
+                       "OR={:.2f}%, ".format(OR * 100) + '\n')
                 np.save(save_result_file, 
                         (sq, sq_std, q, test_loss, 
                         SROCC, KROCC, PLCC, RMSE, OR, test_index))
@@ -278,7 +278,7 @@ if __name__ == '__main__':
                "KROCC={:.4f}, ".format(KROCC) + 
                "PLCC={:.4f}, ".format(PLCC) + 
                "RMSE={:.4f}, ".format(RMSE) +
-               "OR={:.2f}%, ".format(val_OR*100))
+               "OR={:.2f}%, ".format(OR * 100))
         np.save(save_result_file, 
                 (sq, sq_std, q, test_loss, 
                 SROCC, KROCC, PLCC, RMSE, OR, test_index))
