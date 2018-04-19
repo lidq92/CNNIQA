@@ -268,7 +268,7 @@ if __name__ == '__main__':
             qq = torch.mean(outputs.data,0)
             loss = criterion(Variable(qq), label)
             L += loss.data[0]
-        test_loss = L[0] / (i + 1)
+        test_loss = L / (i + 1)
         measure_values = measure(sq, q, sq_std)
         SROCC, KROCC, PLCC, RMSE, OR = measure_values
 
