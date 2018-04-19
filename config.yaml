@@ -19,13 +19,13 @@ test_during_training: True # False #
 database: LIVE # TID2008 or TID2013?
 model: CNNIQA
 TID2013blur:
-  datainfo: TID2013info.mat
+  datainfo: ./data/TID2013info.mat
   im_dir: /media/ldq/Research/Data/tid2013/distorted_images/ # /datasets/qa/tid2013/distorted_images/ #
 TID2008blur:
-  datainfo: TID2008info.mat
+  datainfo: ./data/TID2008info.mat
   im_dir: /media/ldq/Research/Data/tid2008/distorted_images/ # /datasets/qa/tid2008/distorted_images/ # 
 LIVE:
-  datainfo: LIVEfullinfo.mat
+  datainfo: ./data/LIVEfullinfo.mat
   im_dir: /media/ldq/Research/Data/databaserelease2/
 CNNIQA:
 

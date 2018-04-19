@@ -86,7 +86,7 @@ class IQADataset(Dataset):
         self.label = []
         self.label_std = []
         for idx in range(len(self.index)):
-            print("Preprocessing Image: {}".format(im_names[idx]))
+            # print("Preprocessing Image: {}".format(im_names[idx]))
             im = self.loader(os.path.join(im_dir, im_names[idx]))
 
             patches = OverlappingCropPatches(im, self.patch_size, self.stride)

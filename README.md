@@ -11,6 +11,10 @@ CUDA_VISIBLE_DEVICES=1 python CNNIQA.py 0 config.yaml LIVE CNNIQA
 ```
 Before training, the `im_dir` in `config.yaml` must to be specified.
 
+### Visualization
+```bash
+tensorboard --logdir='./logs' --port=6006
+```
 ## Requirements
 - Pytorch 
 - Tensorflow-tensorboard if `enableTensorboard` in `config.yaml` is true.
