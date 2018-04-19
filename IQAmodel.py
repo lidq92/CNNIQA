@@ -2,13 +2,12 @@
 # Email: dingquanli@pku.edu.cn
 # Date: 2018/4/19
 #
-# TODO: hyper-parameters to config
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 class CNNIQAnet(nn.Module):
-    def __init__(self, train=True, ker_size=7, n_kers=50, n1_nodes=800, n2_nodes=800):
+    def __init__(self, ker_size=7, n_kers=50, n1_nodes=800, n2_nodes=800):
         super(CNNIQAnet, self).__init__()
         self.conv1  = nn.Conv2d(1, n_kers, ker_size)
         self.fc1    = nn.Linear(2 * n_kers, n1_nodes)
@@ -21,8 +20,8 @@ class CNNIQAnet(nn.Module):
 
         h1 = F.adaptive_max_pool2d(h, 1)
         h2 = -F.adaptive_max_pool2d(-h, 1)
-        h = torch.cat((h1,h2),1) #
-        h = torch.squeeze(torch.squeeze(h,3),2)
+        h = torch.cat((h1, h2), 1) #
+        h = torch.squeeze(torch.squeeze(h, 3), 2)
 
         h = F.relu(self.fc1(h))
         h = F.dropout(h, p=0.5, training=train)

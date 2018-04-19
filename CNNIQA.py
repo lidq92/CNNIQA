@@ -50,7 +50,7 @@ if __name__ == '__main__':
     print('database: ' + database)  #
     print('model: ' + model)  #
     conf.update(conf[database])
-    # conf.update(conf[model])
+    conf.update(conf[model])
 
     test_ratio = conf['test_ratio']
 
@@ -66,7 +66,10 @@ if __name__ == '__main__':
         test_index = testloader.index #
         testloader = torch.utils.data.DataLoader(testloader)
 
-    net = CNNIQAnet()
+    net = CNNIQAnet(ker_size=conf['kernel_size'], 
+                    n_kers=conf['n_kernels'], 
+                    n1_nodes=conf['n1_nodes'], 
+                    n2_nodes=conf['n2_nodes'])
     print(net)
     if conf['use_cuda']:
         net.cuda()
