@@ -244,10 +244,10 @@ if __name__ == '__main__':
 
     # Test
     if test_ratio > 0:
-        model.load_state_dict(torch.load(trained_model_file))  #  
-        for parameter in model.parameters():
+        net.load_state_dict(torch.load(trained_model_file))  #  
+        for parameter in net.parameters():
             parameter.requires_grad = False #
-        model.eval()
+        net.eval()
 
         L = 0
         q = []
