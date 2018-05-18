@@ -178,12 +178,12 @@ def run(train_batch_size, epochs, lr, weight_decay, config, exp_id, log_dir, tra
         SROCC, KROCC, PLCC, RMSE, MAE, OR = metrics['IQA_performance']
         print("Validation Results - Epoch: {} SROCC: {:.4f} KROCC: {:.4f} PLCC: {:.4f} RMSE: {:.4f} MAE: {:.4f} OR: {:.2f}%%"
               .format(engine.state.epoch, SROCC, KROCC, PLCC, RMSE, MAE, OR))
-        writer.add_scalar("valdation/SROCC", SROCC, engine.state.epoch)
-        writer.add_scalar("valdation/KROCC", KROCC, engine.state.epoch)
-        writer.add_scalar("valdation/PLCC", PLCC, engine.state.epoch)
-        writer.add_scalar("valdation/RMSE", RMSE, engine.state.epoch)
-        writer.add_scalar("valdation/MAE", MAE, engine.state.epoch)
-        writer.add_scalar("valdation/OR", OR, engine.state.epoch)
+        writer.add_scalar("validation/SROCC", SROCC, engine.state.epoch)
+        writer.add_scalar("validation/KROCC", KROCC, engine.state.epoch)
+        writer.add_scalar("validation/PLCC", PLCC, engine.state.epoch)
+        writer.add_scalar("validation/RMSE", RMSE, engine.state.epoch)
+        writer.add_scalar("validation/MAE", MAE, engine.state.epoch)
+        writer.add_scalar("validation/OR", OR, engine.state.epoch)
         global best_criterion
         global best_epoch
         if SROCC > best_criterion:
