@@ -7,7 +7,7 @@ The optimizer is chosen as Adam here, instead of the SGD with momentum in the pa
 
 ## Training
 ```bash
-CUDA_VISIBLE_DEVICES=0 python CNNIQA.py --exp_id=0 --database=LIVE
+CUDA_VISIBLE_DEVICES=0 python main.py --exp_id=0 --database=LIVE
 ```
 Before training, the `im_dir` in `config.yaml` must to be specified.
 
