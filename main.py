@@ -183,7 +183,7 @@ def run(train_batch_size, epochs, lr, weight_decay, config, exp_id, log_dir, tra
         writer.add_scalar("valdation/PLCC", PLCC, engine.state.epoch)
         writer.add_scalar("valdation/RMSE", RMSE, engine.state.epoch)
         writer.add_scalar("valdation/MAE", MAE, engine.state.epoch)
-        writer.add_scalar("testing/OR", OR, engine.state.epoch)
+        writer.add_scalar("valdation/OR", OR, engine.state.epoch)
         global best_criterion
         global best_epoch
         if SROCC > best_criterion:
