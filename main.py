@@ -52,7 +52,7 @@ def loss_fn(y_pred, y):
 
 class IQAPerformance(Metric):
     """
-    Evaluation of IQA methods using SROCC, KROCC, PLCC, RMSE, MAE.
+    Evaluation of IQA methods using SROCC, KROCC, PLCC, RMSE, MAE, OR.
 
     `update` must receive output of the form (y_pred, y).
     """
