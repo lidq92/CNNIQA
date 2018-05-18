@@ -176,7 +176,7 @@ def run(train_batch_size, epochs, lr, weight_decay, config, exp_id, log_dir, tra
         evaluator.run(val_loader)
         metrics = evaluator.state.metrics
         SROCC, KROCC, PLCC, RMSE, MAE, OR = metrics['IQA_performance']
-        print("Validation Results - Epoch: {} SROCC: {:.4f} KROCC: {:.4f} PLCC: {:.4f} RMSE: {:.4f} MAE: {:.4f}"
+        print("Validation Results - Epoch: {} SROCC: {:.4f} KROCC: {:.4f} PLCC: {:.4f} RMSE: {:.4f} MAE: {:.4f} OR: {:.2f}%%"
               .format(engine.state.epoch, SROCC, KROCC, PLCC, RMSE, MAE, OR))
         writer.add_scalar("valdation/SROCC", SROCC, engine.state.epoch)
         writer.add_scalar("valdation/KROCC", KROCC, engine.state.epoch)
@@ -198,7 +198,7 @@ def run(train_batch_size, epochs, lr, weight_decay, config, exp_id, log_dir, tra
             evaluator.run(test_loader)
             metrics = evaluator.state.metrics
             SROCC, KROCC, PLCC, RMSE, MAE, OR = metrics['IQA_performance']
-            print("Testing Results    - Epoch: {} SROCC: {:.4f} KROCC: {:.4f} PLCC: {:.4f} RMSE: {:.4f} MAE: {:.4f}"
+            print("Testing Results    - Epoch: {} SROCC: {:.4f} KROCC: {:.4f} PLCC: {:.4f} RMSE: {:.4f} MAE: {:.4f} OR: {:.2f}%%"
                   .format(engine.state.epoch, SROCC, KROCC, PLCC, RMSE, MAE, OR))
             writer.add_scalar("testing/SROCC", SROCC, engine.state.epoch)
             writer.add_scalar("testing/KROCC", KROCC, engine.state.epoch)
@@ -215,7 +215,7 @@ def run(train_batch_size, epochs, lr, weight_decay, config, exp_id, log_dir, tra
             metrics = evaluator.state.metrics
             SROCC, KROCC, PLCC, RMSE, MAE, OR = metrics['IQA_performance']
             global best_epoch
-            print("Final Test Results - Epoch: {} SROCC: {:.4f} KROCC: {:.4f} PLCC: {:.4f} RMSE: {:.4f} MAE: {:.4f}"
+            print("Final Test Results - Epoch: {} SROCC: {:.4f} KROCC: {:.4f} PLCC: {:.4f} RMSE: {:.4f} MAE: {:.4f} OR: {:.2f}%%"
                 .format(best_epoch, SROCC, KROCC, PLCC, RMSE, MAE, OR))
             np.save(save_result_file, (SROCC, KROCC, PLCC, RMSE, MAE, OR))
 
