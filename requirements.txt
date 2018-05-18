@@ -1,7 +1,9 @@
 h5py==2.7.1
-numpy==1.14.0
+numpy==1.14.2
 PyYAML==3.12
-scipy==1.0.0
-tensorflow==1.0.0
-torch==0.3.0.post4
-torchvision==0.2.0
+scipy==1.0.1
+tensorflow-gpu==1.0.0
+torch==0.4.0
+torchvision==0.2.1
+tensorboardX==1.2
+# python setup.py install # https://github.com/pytorch/ignite

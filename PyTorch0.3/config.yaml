@@ -1,8 +1,23 @@
+# Configuration File
+# 
+# Author: Dingquan Li
+# Email: dingquanli@pku.edu.cn
+# Date: 2018/4/18
+# 
+# f = open('config.yaml')
+# conf = yaml.load(f)
+# print(conf)  
+# f.close()
+# conf.update(conf[conf['database']]) #
+# conf.update(conf[conf['model']]) #
+
 ###################### Base Settings######################
+use_cuda: True #
 enableTensorboard: True #
 test_during_training: True #
 
-### database ###
+database: LIVE # TID2008 or TID2013?
+model: CNNIQA
 TID2013:
   datainfo: ./data/TID2013fullinfo.mat
   im_dir: /media/ldq/Research/Data/tid2013/distorted_images/ # /datasets/qa/tid2013/distorted_images/ #
@@ -19,16 +34,19 @@ LIVE:
   datainfo: ./data/LIVEfullinfo.mat
   im_dir: /media/ldq/Research/Data/databaserelease2/
 
+CNNIQA:
+  kernel_size: 7
+  n_kernels: 50
+  n1_nodes: 800
+  n2_nodes: 800
+
 patch_size: 32
 stride: 32
 
 train_ratio: 0.6
 # val_ratio: 0.2  #
 test_ratio: 0.2  #
-
-### model ###
-CNNIQA:
-  kernel_size: 7
-  n_kernels: 50
-  n1_nodes: 800
-  n2_nodes: 800
+batch_size: 128
+learning_rate: 0.0001
+weight_decay: 0
+n_epochs: 200

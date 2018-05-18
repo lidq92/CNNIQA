@@ -17,11 +17,20 @@ def default_loader(path):
 
 
 def LocalNormalization(patch, P=3, Q=3, C=1):
-    kernel = np.ones((P, Q)) / (P * Q)
+    kernel = np.ones((P,Q)) / (P * Q)
     patch_mean = convolve2d(patch, kernel, boundary='symm', mode='same')
     patch_sm = convolve2d(np.square(patch), kernel, boundary='symm', mode='same')
     patch_std = np.sqrt(np.maximum(patch_sm - np.square(patch_mean), 0)) + C
     patch_ln = torch.from_numpy((patch - patch_mean) / patch_std).float().unsqueeze(0)
+    # rows, cols = patch.shape
+    # patch_ln = np.zeros([1, rows, cols])
+    # patch_pad = util.pad(patch, [P, Q], 'reflect')
+    # for i in range(rows):
+    #     for j in range(cols):
+    #         patch33 = patch_pad[i:i+2*P+1,j:j+2*Q+1]
+    #         mu = patch33.mean()
+    #         sigma = patch33.std()
+    #         patch_ln[0,i,j] = (patch[i,j]-mu)/(sigma+C)
     return patch_ln
 
 
@@ -37,7 +46,7 @@ def OverlappingCropPatches(im, patch_size=32, stride=32):
 
 
 class IQADataset(Dataset):
-    def __init__(self, conf, exp_id=0, status='train', loader=default_loader):
+    def __init__(self, conf, EXP_ID, status='train', loader=default_loader):
         self.loader = loader
         im_dir = conf['im_dir']
         self.patch_size = conf['patch_size']
@@ -45,9 +54,9 @@ class IQADataset(Dataset):
         datainfo = conf['datainfo']
 
         Info = h5py.File(datainfo)
-        index = Info['index'][:, int(exp_id) % 1000]
-        ref_ids = Info['ref_ids'][0, :]
-        test_ratio = conf['test_ratio']
+        index = Info['index'][:, int(EXP_ID) % 1000] # 
+        ref_ids = Info['ref_ids'][0, :] #
+        test_ratio = conf['test_ratio']  #
         train_ratio = conf['train_ratio']
         trainindex = index[:int(train_ratio * len(index))]
         testindex = index[int((1-test_ratio) * len(index)):]
@@ -59,19 +68,17 @@ class IQADataset(Dataset):
         if status == 'train':
             self.index = train_index
             print("# Train Images: {}".format(len(self.index)))
-            print('Ref Index:')
-            print(trainindex)
         if status == 'test':
             self.index = test_index
             print("# Test Images: {}".format(len(self.index)))
-            print('Ref Index:')
-            print(testindex)
         if status == 'val':
             self.index = val_index
             print("# Val Images: {}".format(len(self.index)))
+        print('Index:')
+        print(self.index)
 
-        self.mos = Info['subjective_scores'][0, self.index]
-        self.mos_std = Info['subjective_scoresSTD'][0, self.index]
+        self.mos = Info['subjective_scores'][0, self.index] #
+        self.mos_std = Info['subjective_scoresSTD'][0, self.index] #
         im_names = [Info[Info['im_names'][0, :][i]].value.tobytes()\
                         [::2].decode() for i in self.index]
         
@@ -89,7 +96,7 @@ class IQADataset(Dataset):
                     self.label.append(self.mos[idx])
                     self.label_std.append(self.mos_std[idx])
             else:
-                self.patches = self.patches + (torch.stack(patches), ) #
+                self.patches = self.patches + (patches,) #
                 self.label.append(self.mos[idx])
                 self.label_std.append(self.mos_std[idx])
 
@@ -97,4 +104,5 @@ class IQADataset(Dataset):
         return len(self.patches)
 
     def __getitem__(self, idx):
-        return (self.patches[idx], torch.Tensor([self.label[idx],]))
+        return (self.patches[idx], torch.Tensor([self.label[idx],]), 
+                torch.Tensor([self.label_std[idx],]))
