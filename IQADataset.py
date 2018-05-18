@@ -97,4 +97,6 @@ class IQADataset(Dataset):
         return len(self.patches)
 
     def __getitem__(self, idx):
-        return (self.patches[idx], torch.Tensor([self.label[idx],]))
+        return (self.patches[idx], (torch.Tensor([self.label[idx],]),
+                torch.Tensor([self.label_std[idx],])))
+        

@@ -46,6 +46,10 @@ def ensure_dir(path):
         os.makedirs(path)
 
 
+def loss_fn(y_pred, y):
+    return F.l1_loss(y_pred, y[0])
+
+
 class IQAPerformance(Metric):
     """
     Evaluation of IQA methods using SROCC, KROCC, PLCC, RMSE, MAE.
@@ -55,15 +59,18 @@ class IQAPerformance(Metric):
     def reset(self):
         self._y_pred = []
         self._y      = []
+        self._y_std  = []
 
     def update(self, output):
         y_pred, y = output
 
-        self._y.append(torch.mean(y))
+        self._y.append(y[0])
+        self._y_std.append(y[1])
         self._y_pred.append(torch.mean(y_pred))
 
     def compute(self):
         sq = np.reshape(np.asarray(self._y), (-1,))
+        sq_std = np.reshape(np.asarray(self._y_std), (-1,))
         q = np.reshape(np.asarray(self._y_pred), (-1,))
 
         srocc = stats.spearmanr(sq, q)[0]
@@ -71,8 +78,9 @@ class IQAPerformance(Metric):
         plcc = stats.pearsonr(sq, q)[0]
         rmse = np.sqrt(((sq - q) ** 2).mean())
         mae = np.abs((sq - q)).mean()
+        outlier_ratio = (np.abs(sq - q) > 2 * sq_std).mean()
 
-        return srocc, krocc, plcc, rmse, mae
+        return srocc, krocc, plcc, rmse, mae, outlier_ratio
 
 
 class CNNIQAnet(nn.Module):
@@ -154,7 +162,7 @@ def run(train_batch_size, epochs, lr, weight_decay, config, exp_id, log_dir, tra
     optimizer = Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     global best_criterion
     best_criterion = -1  # SROCC>=-1
-    trainer = create_supervised_trainer(model, optimizer, F.l1_loss, device=device)
+    trainer = create_supervised_trainer(model, optimizer, loss_fn, device=device)
     evaluator = create_supervised_evaluator(model,
                                             metrics={'IQA_performance': IQAPerformance()},
                                             device=device)
@@ -167,14 +175,15 @@ def run(train_batch_size, epochs, lr, weight_decay, config, exp_id, log_dir, tra
     def log_validation_results(engine):
         evaluator.run(val_loader)
         metrics = evaluator.state.metrics
-        SROCC, KROCC, PLCC, RMSE, MAE = metrics['IQA_performance']
+        SROCC, KROCC, PLCC, RMSE, MAE, OR = metrics['IQA_performance']
         print("Validation Results - Epoch: {} SROCC: {:.4f} KROCC: {:.4f} PLCC: {:.4f} RMSE: {:.4f} MAE: {:.4f}"
-              .format(engine.state.epoch, SROCC, KROCC, PLCC, RMSE, MAE))
+              .format(engine.state.epoch, SROCC, KROCC, PLCC, RMSE, MAE, OR))
         writer.add_scalar("valdation/SROCC", SROCC, engine.state.epoch)
         writer.add_scalar("valdation/KROCC", KROCC, engine.state.epoch)
         writer.add_scalar("valdation/PLCC", PLCC, engine.state.epoch)
         writer.add_scalar("valdation/RMSE", RMSE, engine.state.epoch)
         writer.add_scalar("valdation/MAE", MAE, engine.state.epoch)
+        writer.add_scalar("testing/OR", OR, engine.state.epoch)
         global best_criterion
         global best_epoch
         if SROCC > best_criterion:
@@ -188,14 +197,15 @@ def run(train_batch_size, epochs, lr, weight_decay, config, exp_id, log_dir, tra
         if config["test_ratio"] > 0 and config['test_during_training']:
             evaluator.run(test_loader)
             metrics = evaluator.state.metrics
-            SROCC, KROCC, PLCC, RMSE, MAE = metrics['IQA_performance']
+            SROCC, KROCC, PLCC, RMSE, MAE, OR = metrics['IQA_performance']
             print("Testing Results    - Epoch: {} SROCC: {:.4f} KROCC: {:.4f} PLCC: {:.4f} RMSE: {:.4f} MAE: {:.4f}"
-                  .format(engine.state.epoch, SROCC, KROCC, PLCC, RMSE, MAE))
+                  .format(engine.state.epoch, SROCC, KROCC, PLCC, RMSE, MAE, OR))
             writer.add_scalar("testing/SROCC", SROCC, engine.state.epoch)
             writer.add_scalar("testing/KROCC", KROCC, engine.state.epoch)
             writer.add_scalar("testing/PLCC", PLCC, engine.state.epoch)
             writer.add_scalar("testing/RMSE", RMSE, engine.state.epoch)
             writer.add_scalar("testing/MAE", MAE, engine.state.epoch)
+            writer.add_scalar("testing/OR", OR, engine.state.epoch)
 
     @trainer.on(Events.COMPLETED)
     def final_testing_results(engine):
@@ -203,11 +213,11 @@ def run(train_batch_size, epochs, lr, weight_decay, config, exp_id, log_dir, tra
             model.load_state_dict(torch.load(trained_model_file))
             evaluator.run(test_loader)
             metrics = evaluator.state.metrics
-            SROCC, KROCC, PLCC, RMSE, MAE = metrics['IQA_performance']
+            SROCC, KROCC, PLCC, RMSE, MAE, OR = metrics['IQA_performance']
             global best_epoch
             print("Final Test Results - Epoch: {} SROCC: {:.4f} KROCC: {:.4f} PLCC: {:.4f} RMSE: {:.4f} MAE: {:.4f}"
-                .format(best_epoch, SROCC, KROCC, PLCC, RMSE, MAE))
-            np.save(save_result_file, (SROCC, KROCC, PLCC, RMSE, MAE))
+                .format(best_epoch, SROCC, KROCC, PLCC, RMSE, MAE, OR))
+            np.save(save_result_file, (SROCC, KROCC, PLCC, RMSE, MAE, OR))
 
     # kick everything off
     trainer.run(train_loader, max_epochs=epochs)
