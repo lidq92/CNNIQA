@@ -177,7 +177,7 @@ def run(train_batch_size, epochs, lr, weight_decay, config, exp_id, log_dir, tra
         metrics = evaluator.state.metrics
         SROCC, KROCC, PLCC, RMSE, MAE, OR = metrics['IQA_performance']
         print("Validation Results - Epoch: {} SROCC: {:.4f} KROCC: {:.4f} PLCC: {:.4f} RMSE: {:.4f} MAE: {:.4f} OR: {:.2f}%"
-              .format(engine.state.epoch, SROCC, KROCC, PLCC, RMSE, MAE, OR))
+              .format(engine.state.epoch, SROCC, KROCC, PLCC, RMSE, MAE, 100 * OR))
         writer.add_scalar("validation/SROCC", SROCC, engine.state.epoch)
         writer.add_scalar("validation/KROCC", KROCC, engine.state.epoch)
         writer.add_scalar("validation/PLCC", PLCC, engine.state.epoch)
@@ -199,7 +199,7 @@ def run(train_batch_size, epochs, lr, weight_decay, config, exp_id, log_dir, tra
             metrics = evaluator.state.metrics
             SROCC, KROCC, PLCC, RMSE, MAE, OR = metrics['IQA_performance']
             print("Testing Results    - Epoch: {} SROCC: {:.4f} KROCC: {:.4f} PLCC: {:.4f} RMSE: {:.4f} MAE: {:.4f} OR: {:.2f}%"
-                  .format(engine.state.epoch, SROCC, KROCC, PLCC, RMSE, MAE, OR))
+                  .format(engine.state.epoch, SROCC, KROCC, PLCC, RMSE, MAE, 100 * OR))
             writer.add_scalar("testing/SROCC", SROCC, engine.state.epoch)
             writer.add_scalar("testing/KROCC", KROCC, engine.state.epoch)
             writer.add_scalar("testing/PLCC", PLCC, engine.state.epoch)
@@ -216,7 +216,7 @@ def run(train_batch_size, epochs, lr, weight_decay, config, exp_id, log_dir, tra
             SROCC, KROCC, PLCC, RMSE, MAE, OR = metrics['IQA_performance']
             global best_epoch
             print("Final Test Results - Epoch: {} SROCC: {:.4f} KROCC: {:.4f} PLCC: {:.4f} RMSE: {:.4f} MAE: {:.4f} OR: {:.2f}%"
-                .format(best_epoch, SROCC, KROCC, PLCC, RMSE, MAE, OR))
+                .format(best_epoch, SROCC, KROCC, PLCC, RMSE, MAE, 100 * OR))
             np.save(save_result_file, (SROCC, KROCC, PLCC, RMSE, MAE, OR))
 
     # kick everything off
