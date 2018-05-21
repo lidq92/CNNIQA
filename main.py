@@ -231,8 +231,8 @@ if __name__ == "__main__":
                         help='input batch size for training (default: 128)')
     parser.add_argument('--epochs', type=int, default=500,
                         help='number of epochs to train (default: 500)')
-    parser.add_argument('--lr', type=float, default=0.0001,
-                        help='learning rate (default: 0.0001)')
+    parser.add_argument('--lr', type=float, default=0.001,
+                        help='learning rate (default: 0.001)')
     parser.add_argument('--weight_decay', type=float, default=0.0,
                         help='weight decay (default: 0.0)')
     parser.add_argument('--config', default='config.yaml', type=str,
