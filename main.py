@@ -209,7 +209,7 @@ def run(train_batch_size, epochs, lr, weight_decay, config, exp_id, log_dir, tra
 
     @trainer.on(Events.COMPLETED)
     def final_testing_results(engine):
-        if config["test_ratio"] > 0:
+        if config["test_ratio"]:
             model.load_state_dict(torch.load(trained_model_file))
             evaluator.run(test_loader)
             metrics = evaluator.state.metrics

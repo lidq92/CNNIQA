@@ -10,6 +10,12 @@ The optimizer is chosen as Adam here, instead of the SGD with momentum in the pa
 CUDA_VISIBLE_DEVICES=0 python main.py --exp_id=0 --database=LIVE
 ```
 Before training, the `im_dir` in `config.yaml` must to be specified.
+Train/Val/Test split ratio in intra-database experiments can be set in `config.yaml` (default is 0.6/0.2/0.2).
+
+## Evaluation
+TODO
+### Cross Dataset
+TODO
 
 ### Visualization
 ```bash
