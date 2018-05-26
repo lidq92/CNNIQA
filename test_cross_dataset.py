@@ -79,4 +79,4 @@ if __name__ == "__main__":
             score = patch_scores.mean().item()
             print(score)
             scores.append(score)
-        np.save(save_path, scores)
+        np.save(args.save_path, scores)
