@@ -18,7 +18,10 @@ Test Demo
 python test_demo.py --im_path=data/I03_01_1.bmp
 ```
 ### Cross Dataset
-TODO
+```bash
+python test_cross_dataset.py --help
+```
+TODO: add metrics calculation. SROCC, KROCC can be easily get. PLCC, RMSE, MAE, OR should be calculated after a non-linear fitting since the quality score ranges are not the same across different IQA datasets.
 
 ### Visualization
 ```bash

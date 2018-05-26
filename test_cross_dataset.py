@@ -1,7 +1,8 @@
 """
-Test Demo
+Test Cross Dataset
+    For help
     ```bash
-    python test_demo.py --im_path=data/I03_01_1.bmp
+    python test_cross_dataset.py --help
     ```
  Date: 2018/5/26
 """
