@@ -13,10 +13,7 @@ Before training, the `im_dir` in `config.yaml` must to be specified.
 Train/Val/Test split ratio in intra-database experiments can be set in `config.yaml` (default is 0.6/0.2/0.2).
 
 ## Evaluation
-Test Demo
-```bash
-python test_demo.py --im_path=data/I03_01_1.bmp
-```
+TODO
 ### Cross Dataset
 TODO
 
