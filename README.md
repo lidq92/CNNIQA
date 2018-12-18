@@ -25,9 +25,13 @@ TODO: add metrics calculation. SROCC, KROCC can be easily get. PLCC, RMSE, MAE, 
 
 ### Visualization
 ```bash
-tensorboard --logdir=tensorboard_logs --port=6006
+tensorboard --logdir=tensorboard_logs --port=6006 # in the server
+ssh -L 6006:localhost:6006 user@host # in your PC, then see the visualization in your PC
 ```
 ## Requirements
+```bash
+pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
 - PyTorch 0.4
 - TensorboardX 1.2, TensorFlow-TensorBoard
 - [pytorch/ignite](https://github.com/pytorch/ignite)
