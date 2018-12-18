@@ -3,7 +3,8 @@ numpy==1.14.2
 PyYAML==3.12
 scipy==1.0.1
 tensorflow-gpu==1.0.0
-torch==0.4.0
+torch==0.4.1
 torchvision==0.2.1
 tensorboardX==1.2
+ignite
 # python setup.py install # https://github.com/pytorch/ignite
