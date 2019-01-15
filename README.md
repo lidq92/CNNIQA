@@ -4,7 +4,7 @@ PyTorch 0.4 implementation of the following paper:
 
 ### Note
 - The optimizer is chosen as Adam here, instead of the SGD with momentum in the paper.
-- the mat files in data/ are the information extracted from the datasets and the train/val/test split info. The subjective scores of LIVE is from the [realigned data](http://live.ece.utexas.edu/research/Quality/release2/dmos_realigned.mat).
+- the mat files in data/ are the information extracted from the datasets and the index information about the train/val/test split. The subjective scores of LIVE is from the [realigned data](http://live.ece.utexas.edu/research/Quality/release2/dmos_realigned.mat).
 
 ## Training
 ```bash
