@@ -11,7 +11,7 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 from PIL import Image
-from IQADataset import OverlappingCropPatches
+from IQADataset import NonOverlappingCropPatches
 import numpy as np
 
 class CNNIQAnet(nn.Module):
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     model.load_state_dict(torch.load(args.model_file))
 
     im = Image.open(args.im_path).convert('L')
-    patches = OverlappingCropPatches(im, 32, 32)
+    patches = NonOverlappingCropPatches(im, 32, 32)
 
     model.eval()
     with torch.no_grad():
