@@ -25,7 +25,7 @@ def LocalNormalization(patch, P=3, Q=3, C=1):
     return patch_ln
 
 
-def OverlappingCropPatches(im, patch_size=32, stride=32):
+def NonOverlappingCropPatches(im, patch_size=32, stride=32):
     w, h = im.size
     patches = ()
     for i in range(0, h - stride, stride):
@@ -82,7 +82,7 @@ class IQADataset(Dataset):
             # print("Preprocessing Image: {}".format(im_names[idx]))
             im = self.loader(os.path.join(im_dir, im_names[idx]))
 
-            patches = OverlappingCropPatches(im, self.patch_size, self.stride)
+            patches = NonOverlappingCropPatches(im, self.patch_size, self.stride)
             if status == 'train':
                 self.patches = self.patches + patches #
                 for i in range(len(patches)):
