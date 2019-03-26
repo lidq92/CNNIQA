@@ -12,7 +12,7 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 from PIL import Image
-from IQADataset import OverlappingCropPatches
+from IQADataset import NonOverlappingCropPatches
 import numpy as np
 import h5py, os
 
@@ -74,7 +74,7 @@ if __name__ == "__main__":
         scores = []   
         for i in range(len(im_names)):
             im = Image.open(os.path.join(args.dataset_dir, im_names[i])).convert('L')
-            patches = OverlappingCropPatches(im, 32, 32)
+            patches = NonOverlappingCropPatches(im, 32, 32)
             patch_scores = model(torch.stack(patches).to(device))
             score = patch_scores.mean().item()
             print(score)
