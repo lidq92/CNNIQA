@@ -44,7 +44,7 @@ class IQADataset(Dataset):
         self.stride = conf['stride']
         datainfo = conf['datainfo']
 
-        Info = h5py.File(datainfo)
+        Info = h5py.File(datainfo, 'r')
         index = Info['index'][:, int(exp_id) % 1000]
         ref_ids = Info['ref_ids'][0, :]
         test_ratio = conf['test_ratio']
@@ -72,7 +72,7 @@ class IQADataset(Dataset):
 
         self.mos = Info['subjective_scores'][0, self.index]
         self.mos_std = Info['subjective_scoresSTD'][0, self.index]
-        im_names = [Info[Info['im_names'][0, :][i]].value.tobytes()\
+        im_names = [Info[Info['im_names'][0, :][i]][()].tobytes()\
                         [::2].decode() for i in self.index]
         
         self.patches = ()
@@ -97,6 +97,4 @@ class IQADataset(Dataset):
         return len(self.patches)
 
     def __getitem__(self, idx):
-        return (self.patches[idx], (torch.Tensor([self.label[idx],]),
-                torch.Tensor([self.label_std[idx],])))
-        
+        return self.patches[idx], (torch.Tensor([self.label[idx]]), torch.Tensor([self.label_std[idx]]))

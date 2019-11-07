@@ -1,14 +1,11 @@
 """
-PyTorch 0.4 implementation of the following paper:
+PyTorch 1.3 implementation of the following paper:
 Kang L, Ye P, Li Y, et al. Convolutional neural networks for no-reference image quality assessment[C]//
 Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2014: 1733-1740.
- Requirements:
-    TensorboardX (https://github.com/lanpa/tensorboard-pytorch): `pip install tensorboardX`
-    Tensorboard: `pip install tensorflow` (or just install tensorboard without the rest of tensorflow)
  Usage:
     Start tensorboard:
     ```bash
-    tensorboard --logdir=tensorboard_logs --port=6006
+    tensorboard --logdir=logger --port=6006
     ```
     Run the main.py:
     ```bash
@@ -17,28 +14,25 @@ Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2
 
  Implemented by Dingquan Li
  Email: dingquanli@pku.edu.cn
- Date: 2018/5/18
+ Date: 2019/11/8
 """
 
 from argparse import ArgumentParser
+import os
+import numpy as np
+import random
+from scipy import stats
+import yaml
 import torch
 from torch.utils.data import DataLoader
 from torch import nn
 import torch.nn.functional as F
 from torch.optim import Adam
-
 from IQADataset import IQADataset
-import numpy as np
-from scipy import stats
-import os, yaml
-
-try:
-    from tensorboardX import SummaryWriter
-except ImportError:
-    raise RuntimeError("No tensorboardX package is found. Please install with the command: \npip install tensorboardX")
-
 from ignite.engine import Events, create_supervised_trainer, create_supervised_evaluator
 from ignite.metrics.metric import Metric
+from tensorboardX import SummaryWriter
+import datetime
 
 
 def ensure_dir(path):
@@ -64,9 +58,9 @@ class IQAPerformance(Metric):
     def update(self, output):
         y_pred, y = output
 
-        self._y.append(y[0])
-        self._y_std.append(y[1])
-        self._y_pred.append(torch.mean(y_pred))
+        self._y.append(y[0].item())
+        self._y_std.append(y[1].item())
+        self._y_pred.append(torch.mean(y_pred).item())
 
     def compute(self):
         sq = np.reshape(np.asarray(self._y), (-1,))
@@ -130,17 +124,6 @@ def get_data_loaders(config, train_batch_size, exp_id=0):
     return train_loader, val_loader
 
 
-def create_summary_writer(model, data_loader, log_dir='tensorboard_logs'):
-    writer = SummaryWriter(log_dir=log_dir)
-    data_loader_iter = iter(data_loader)
-    x, y = next(data_loader_iter)
-    try:
-        writer.add_graph(model, x)
-    except Exception as e:
-        print("Failed to save model graph: {}".format(e))
-    return writer
-
-
 def run(train_batch_size, epochs, lr, weight_decay, config, exp_id, log_dir, trained_model_file, save_result_file, disable_gpu=False):
     if config['test_ratio']:
         train_loader, val_loader, test_loader = get_data_loaders(config, train_batch_size, exp_id)
@@ -152,12 +135,11 @@ def run(train_batch_size, epochs, lr, weight_decay, config, exp_id, log_dir, tra
                       n_kers=config['n_kernels'],
                       n1_nodes=config['n1_nodes'],
                       n2_nodes=config['n2_nodes'])
-    writer = create_summary_writer(model, train_loader, log_dir)
+    writer = SummaryWriter(log_dir=log_dir)
     model = model.to(device)
     print(model)
     # if multi_gpu and torch.cuda.device_count() > 1:
     #     model = nn.DataParallel(model)
-    #     train_batch_size *= torch.cuda.device_count()
 
     optimizer = Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     global best_criterion
@@ -227,6 +209,7 @@ def run(train_batch_size, epochs, lr, weight_decay, config, exp_id, log_dir, tra
 
 if __name__ == "__main__":
     parser = ArgumentParser(description='PyTorch CNNIQA')
+    parser.add_argument("--seed", type=int, default=19920517)
     parser.add_argument('--batch_size', type=int, default=128,
                         help='input batch size for training (default: 128)')
     parser.add_argument('--epochs', type=int, default=500,
@@ -245,7 +228,7 @@ if __name__ == "__main__":
                         help='model name (default: CNNIQA)')
     # parser.add_argument('--resume', default=None, type=str,
     #                     help='path to latest checkpoint (default: None)')
-    parser.add_argument("--log_dir", type=str, default="tensorboard_logs",
+    parser.add_argument("--log_dir", type=str, default="logger",
                         help="log directory for Tensorboard log output")
     parser.add_argument('--disable_gpu', action='store_true',
                         help='flag whether to disable GPU')
@@ -254,15 +237,24 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    torch.manual_seed(args.seed)  #
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    np.random.seed(args.seed)
+    random.seed(args.seed)
+
+    torch.utils.backcompat.broadcast_warning.enabled = True
+
     with open(args.config) as f:
-        config = yaml.load(f)
+        config = yaml.load(f, Loader=yaml.FullLoader)
     print('exp id: ' + args.exp_id)
     print('database: ' + args.database)
     print('model: ' + args.model)
     config.update(config[args.database])
     config.update(config[args.model])
 
-    log_dir = args.log_dir + '/EXP{}-{}-{}-lr={}-train'.format(args.exp_id, args.database, args.model, args.lr)
+    log_dir = '{}/EXP{}-{}-{}-lr={}-{}'.format(args.log_dir, args.exp_id, args.database, args.model, args.lr, 
+                                                  datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y"))
     ensure_dir('checkpoints')
     trained_model_file = 'checkpoints/{}-{}-EXP{}-lr={}'.format(args.model, args.database, args.exp_id, args.lr)
     ensure_dir('results')

@@ -16,6 +16,7 @@ from IQADataset import NonOverlappingCropPatches
 import numpy as np
 import h5py, os
 
+
 class CNNIQAnet(nn.Module):
     def __init__(self, ker_size=7, n_kers=50, n1_nodes=800, n2_nodes=800):
         super(CNNIQAnet, self).__init__()

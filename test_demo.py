@@ -12,7 +12,7 @@ from torch import nn
 import torch.nn.functional as F
 from PIL import Image
 from IQADataset import NonOverlappingCropPatches
-import numpy as np
+
 
 class CNNIQAnet(nn.Module):
     def __init__(self, ker_size=7, n_kers=50, n1_nodes=800, n2_nodes=800):

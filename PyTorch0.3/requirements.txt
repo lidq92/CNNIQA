@@ -1,7 +1,0 @@
-h5py==2.7.1
-numpy==1.14.0
-PyYAML==3.12
-scipy==1.0.0
-tensorflow==1.0.0
-torch==0.3.0.post4
-torchvision==0.2.0

@@ -16,7 +16,7 @@ TID2008blur:
   im_dir: /media/ldq/Research/Data/tid2008/distorted_images/
 LIVE:
   datainfo: ./data/LIVEfullinfo.mat
-  im_dir: /media/ldq/Research/Data/databaserelease2/
+  im_dir: /data/ldq/databaserelease2/
 
 patch_size: 32
 stride: 32
