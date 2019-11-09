@@ -31,12 +31,17 @@ ssh -p port -L 6006:localhost:6006 user@host # in your PC. See the visualization
 ```
 ## Requirements
 ```bash
+conda create -n reproducibleresearch pip python=3.6
+source activate reproducibleresearch
 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+source deactive
 ```
 - Python 3.6.8
 - PyTorch 1.3.0
 - TensorboardX 1.9, TensorFlow 2.0.0
 - [pytorch/ignite 0.2.1](https://github.com/pytorch/ignite)
+
+Note: You need to install the right CUDA version.
 
 ## TODO (If I have free time)
 - Simplify the code
