@@ -84,6 +84,7 @@ class CNNIQAnet(nn.Module):
         self.fc1    = nn.Linear(2 * n_kers, n1_nodes)
         self.fc2    = nn.Linear(n1_nodes, n2_nodes)
         self.fc3    = nn.Linear(n2_nodes, 1)
+        self.dropout = nn.Dropout()
 
     def forward(self, x):
         x  = x.view(-1, x.size(-3), x.size(-2), x.size(-1))  #
@@ -98,7 +99,7 @@ class CNNIQAnet(nn.Module):
         h  = h.squeeze(3).squeeze(2)
 
         h  = F.relu(self.fc1(h))
-        h  = F.dropout(h)
+        h  = self.dropout(h)
         h  = F.relu(self.fc2(h))
 
         q  = self.fc3(h)
